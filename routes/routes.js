@@ -1,26 +1,20 @@
 const express = require('express')
 const router = express.Router()
 const model = require('../model/model')
-var bodyParser = require('body-parser');
-var fs = require('fs')
-var path = require('path')
 
 router.post('/post', async (req, res) => {
-    const data = new model ({
+    const data = new model({
         name: req.body.name,
         price: req.body.price,
         description: req.body.description,
-        //image: {
-        //    data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.body.image)),
-        //    contentType: 'image/png'
-        //}
-    })
-    try{
-        const dataToSave = await data.save()
-        res.status(200).json(dataToSave)
-    }
-    catch(error){
-        res.status(400).json({message: error.message})
+        image: req.body.image
+    });
+    
+    try {
+        const dataToSave = await data.save();
+        res.status(200).json(dataToSave);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
 })
 
