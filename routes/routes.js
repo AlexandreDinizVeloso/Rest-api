@@ -64,8 +64,8 @@ router.post("/orders", async (req, res) => {
     const order = await Order.create({ items });
     res.status(201).json(order);
   } catch (error) {
-    console.error("Error creating order:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Erro criando pedido:", error);
+    res.status(500).json({ message: "Erro interno do servidor" });
   }
 });
 

@@ -30,6 +30,14 @@ const orderItemSchema = new mongoose.Schema({
 });
 
 const orderSchema = new mongoose.Schema({
+  userId: {
+    type: Number,
+    required: true,
+  },
+  orderId: {
+    type: Number,
+    required: true,
+  },
   items: [orderItemSchema],
   orderState: {
     type: String,

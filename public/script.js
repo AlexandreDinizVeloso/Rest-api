@@ -1,4 +1,4 @@
-let selectedProducts = [];
+let products = [];
 
 document.addEventListener("DOMContentLoaded", function () {
   displayProductsByCategory("Sanduiches", "sandwich-container");
@@ -16,7 +16,7 @@ function displayProductsByCategory(category, containerId) {
       displayProducts(products, container);
     })
     .catch((error) => {
-      console.error("Error fetching products:", error);
+      console.error("Erro fetch:", error);
     });
 }
 
@@ -32,35 +32,8 @@ function displayProducts(products, container) {
       <p class="product-price">$${product.price.toFixed(2)}</p>
     `;
 
-    productDiv.addEventListener("click", () => {
-      toggleProductSelection(productDiv, product);
-    });
-
     container.appendChild(productDiv);
   });
-}
-
-function toggleProductSelection(productDiv, product) {
-  const productId = product._id;
-
-  // Check if the product is already selected
-  const index = selectedProducts.findIndex(
-    (selectedProduct) => selectedProduct.productId === productId
-  );
-
-  if (index === -1) {
-    // Product is not selected, add it to the selectedProducts array
-    selectedProducts.push({
-      productId: productId,
-      name: product.name,
-      price: product.price,
-    });
-    productDiv.classList.add("selected");
-  } else {
-    // Product is already selected, remove it from the selectedProducts array
-    selectedProducts.splice(index, 1);
-    productDiv.classList.remove("selected");
-  }
 }
 
 function sendOrder() {
@@ -70,10 +43,9 @@ function sendOrder() {
   const orderData = {
     userId: userId,
     orderId: orderId,
-    items: selectedProducts,
+    items: products,
   };
 
-  // Assuming you are sending a POST request to the server
   fetch("http://localhost:3000/api/orders", {
     method: "POST",
     headers: {
@@ -83,11 +55,10 @@ function sendOrder() {
   })
     .then((response) => response.json())
     .then((order) => {
-      console.log("Order placed successfully:", order);
-      // Optionally, you can redirect the user to a thank you page or perform other actions.
+      console.log("Pedido feito com sucesso:", order);
     })
     .catch((error) => {
-      console.error("Error placing order:", error);
+      console.error("Erro fazendo pedido:", error);
     });
 }
 
