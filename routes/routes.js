@@ -1,66 +1,90 @@
-const express = require('express')
-const router = express.Router()
-const model = require('../model/model')
+const express = require("express");
+const router = express.Router();
+const { Product, Order } = require("../model/model");
 
-router.post('/post', async (req, res) => {
-    const data = new model({
-        name: req.body.name,
-        price: req.body.price,
-        description: req.body.description,
-        image: req.body.image
+router.post("/products", async (req, res) => {
+  try {
+    const product = await Product.create(req.body);
+    res.status(201).json(product);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+router.get("/products", async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/products/:category", async (req, res) => {
+  try {
+    const product = await Product.find({ category: req.params.category });
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/products/:id", async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.patch("/products/:id", async (req, res) => {
+  try {
+    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
     });
-    
-    try {
-        const dataToSave = await data.save();
-        res.status(200).json(dataToSave);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-})
+    res.json(product);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
 
-router.get('/getAll', async (req, res) => {
-    try{
-        const data = await model.find()
-        res.json(data)
-    }
-    catch(error) {
-        res.status(500).json({message: error.message})
-    }
-})
+router.delete("/products/:id", async (req, res) => {
+  try {
+    const product = await Product.findByIdAndDelete(req.params.id);
+    res.json({ message: `'${product.name}' deletado com sucesso.` });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
 
-router.get('/getOne/:id', async (req, res) => {
-    try{
-        const data = await model.findById(req.params.id)
-        res.json(data)
-    }
-    catch(error) {
-        res.status(500).json({message: error.message})
-    }
-})
+router.post("/orders", async (req, res) => {
+  try {
+    const { items } = req.body;
+    const order = await Order.create({ items });
+    res.status(201).json(order);
+  } catch (error) {
+    console.error("Error creating order:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
-router.patch('/update/:id', async (req, res) => {
-    try{
-        const id = req.params.id
-        const updateData = req.body
-        const options = {new: true}
+router.get("/orders", async (req, res) => {
+  try {
+    const orders = await Order.find();
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
-        const result = await model.findByIdAndUpdate(id, updateData, options)
-        res.send(result)
-    }
-    catch(error) {
-        res.status(400).json({message: error.message})
-    }
-})
+router.get("/orders/:orderId", async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.orderId);
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
-router.delete('/delete/:id', async (req, res) => {
-    try{
-        const id = req.params.id
-        const data = await model.findByIdAndDelete(id)
-        res.send(`'${data.name}' apagado com sucesso.`) 
-    }
-    catch(error) {
-        res.status(400).json({message: error.message})
-    }
-})
-
-module.exports = router
+module.exports = router;
