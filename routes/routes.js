@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { Product, Order } = require("../model/model");
+const { Telegraf } = require("telegraf");
+
+const bot = new Telegraf(process.env.BOT_TOKEN);
 
 router.post("/products", async (req, res) => {
   try {
@@ -49,6 +52,41 @@ router.patch("/products/:id", async (req, res) => {
   }
 });
 
+router.patch("/orders/:orderId", async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+
+    const originalOrder = await Order.findOne({ orderId: orderId });
+
+    if (!originalOrder) {
+      return res.status(404).json({ message: "Pedido não encontrado" });
+    }
+
+    const updatedOrder = await Order.findOneAndUpdate(
+      { orderId: orderId },
+      { $set: req.body },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ message: "Pedido não encontrado" });
+    }
+
+    const userId = updatedOrder.userId;
+    const orderState = updatedOrder.orderState;
+
+    res.json(updatedOrder);
+
+    bot.telegram.sendMessage(
+      userId,
+      `O estado do seu pedido "${orderId}" foi alterado para "${orderState}"`
+    );
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erro interno do servidor" });
+  }
+});
+
 router.delete("/products/:id", async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
@@ -60,11 +98,37 @@ router.delete("/products/:id", async (req, res) => {
 
 router.post("/orders", async (req, res) => {
   try {
-    const { items } = req.body;
-    const order = await Order.create({ items });
+    const { userId, orderId, items } = req.body;
+
+    const populatedItems = await Promise.all(
+      items.map(async (item) => {
+        const product = await Product.findById(item.product);
+        return {
+          product: product._id,
+          name: product.name,
+          quantity: item.quantity,
+          price: product.price,
+        };
+      })
+    );
+
+    const telegramChatId = req.body.telegramChatId;
+
+    const order = await Order.create({
+      userId: userId,
+      orderId: orderId,
+      items: populatedItems,
+      orderState: "Preparação",
+      telegramChatId: telegramChatId,
+    });
+
     res.status(201).json(order);
+    bot.telegram.sendMessage(
+      userId,
+      `Pedido número "${orderId}" foi criado com sucesso.`
+    );
   } catch (error) {
-    console.error("Erro criando pedido:", error);
+    console.error("Pedido não encontrado:", error);
     res.status(500).json({ message: "Erro interno do servidor" });
   }
 });
@@ -80,10 +144,17 @@ router.get("/orders", async (req, res) => {
 
 router.get("/orders/:orderId", async (req, res) => {
   try {
-    const order = await Order.findById(req.params.orderId);
+    const orderId = req.params.orderId;
+    const order = await Order.findOne({ orderId: orderId });
+
+    if (!order) {
+      return res.status(404).json({ message: "Pedido não encontrado" });
+    }
+
     res.json(order);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Erro interno do servidor" });
   }
 });
 

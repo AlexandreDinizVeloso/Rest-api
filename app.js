@@ -1,12 +1,9 @@
 const express = require("express");
 const app = express();
-const axios = require("axios");
 const path = require("path");
 const { Telegraf } = require("telegraf");
 const { v4: uuidv4 } = require("uuid");
 require("dotenv").config();
-
-const { Order } = require("./model/model");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -17,12 +14,6 @@ bot.command("start", (ctx) => {
     "Bem vindo ao BOT, faça seu pedido usando o comando /pedir!"
   );
 });
-
-function generateOrderId() {
-  const timestamp = new Date().getTime().toString(36);
-  const randomString = Math.random().toString(36).substring(2, 8);
-  return `${timestamp}-${randomString}`;
-}
 
 bot.command("pedir", async (ctx) => {
   const userId = ctx.message.from.id;

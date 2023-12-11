@@ -35,7 +35,7 @@ const orderSchema = new mongoose.Schema({
     required: true,
   },
   orderId: {
-    type: Number,
+    type: String,
     required: true,
   },
   items: [orderItemSchema],
@@ -43,6 +43,9 @@ const orderSchema = new mongoose.Schema({
     type: String,
     enum: ["Preparação", "Em progresso", "Finalizado"],
     default: "Preparação",
+  },
+  telegramChatId: {
+    type: Number,
   },
 });
 
