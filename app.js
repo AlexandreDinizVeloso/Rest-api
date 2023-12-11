@@ -36,7 +36,7 @@ app.get(`/orders/:userId/:orderId`, (req, res) => {
 
 const PORT = 3003;
 app.listen(PORT, () => {
-  console.log(`Servidor executando na porta ${PORT}`);
+  console.log(`Bot executando na porta ${PORT}`);
 });
 
 bot.launch();

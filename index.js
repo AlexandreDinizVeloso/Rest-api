@@ -36,5 +36,5 @@ app.get("/worker", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Servidor funcionando na porta: ${PORT}`);
+  console.log(`Banco de dados funcionando na porta: ${PORT}`);
 });
