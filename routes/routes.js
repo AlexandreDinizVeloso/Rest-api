@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { Product, Order } = require("../model/model");
 
+const bot = require("../bot");
+
 router.post("/products", async (req, res) => {
   try {
     const product = await Product.create(req.body);
@@ -74,8 +76,10 @@ router.patch("/orders/:orderId", async (req, res) => {
 
     res.json(updatedOrder);
 
-    const { sendOrderNotification } = require("./notification");
-    sendOrderNotification(bot, orderId, orderState, userId);
+    bot.telegram.sendMessage(
+      userId,
+      `O estado do seu pedido "${orderId}" foi alterado para "${orderState}"`
+    );
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Erro interno do servidor" });
