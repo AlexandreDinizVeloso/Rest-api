@@ -35,6 +35,13 @@ app.get("/worker", (req, res) => {
   res.sendFile(workerPath);
 });
 
+app.get(`/orders/:userId/:orderId`, (req, res) => {
+  const userId = req.params.userId;
+  const orderId = req.params.orderId;
+
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
 app.listen(PORT, () => {
   console.log(`Banco de dados funcionando na porta: ${PORT}`);
 });

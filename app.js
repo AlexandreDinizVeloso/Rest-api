@@ -23,16 +23,6 @@ bot.command("pedir", async (ctx) => {
   );
 });
 
-app.use(express.json());
-app.use(express.static("public"));
-
-app.get(`/orders/:userId/:orderId`, (req, res) => {
-  const userId = req.params.userId;
-  const orderId = req.params.orderId;
-
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
 const PORT = 3003;
 app.listen(PORT, () => {
   console.log(`Bot executando na porta ${PORT}`);
