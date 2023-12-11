@@ -1,5 +1,7 @@
 let products = {};
 
+const bot = require("./bot");
+
 document.addEventListener("DOMContentLoaded", function () {
   displayProductsByCategory("Sanduiches", "sandwich-container");
   displayProductsByCategory("Acompanhamentos", "accompaniment-container");
@@ -111,6 +113,7 @@ function sendOrder() {
     .then((response) => response.json())
     .then((order) => {
       alert("Pedido enviado com sucesso:", order);
+      bot.telegram.sendMessage(6517073752, `Um novo pedido foi registrado.`);
     })
     .catch((error) => {
       alert("Erro ao enviar pedido:", error);

@@ -8,6 +8,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderOrders(orders);
 });
 
+const orders = await fetchOrders();
+
+renderOrders(orders);
+
+setInterval(async () => {
+  const updatedOrders = await fetchOrders();
+  renderOrders(updatedOrders);
+}, 5000);
+
 async function fetchOrders() {
   const response = await fetch("/api/orders");
   const orders = await response.json();
