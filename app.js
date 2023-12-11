@@ -5,6 +5,8 @@ const { Telegraf } = require("telegraf");
 const { v4: uuidv4 } = require("uuid");
 require("dotenv").config();
 
+const { sendOrderNotification } = require("./notification");
+
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 bot.command("start", (ctx) => {
@@ -33,6 +35,9 @@ app.get(`/orders/:userId/:orderId`, (req, res) => {
 
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
+
+const routes = require("./routes/routes");
+app.use("/api", routes);
 
 const PORT = 3003;
 app.listen(PORT, () => {

@@ -1,9 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const { Product, Order } = require("../model/model");
-const { Telegraf } = require("telegraf");
-
-const bot = new Telegraf(process.env.BOT_TOKEN);
 
 router.post("/products", async (req, res) => {
   try {
@@ -77,10 +74,8 @@ router.patch("/orders/:orderId", async (req, res) => {
 
     res.json(updatedOrder);
 
-    bot.telegram.sendMessage(
-      userId,
-      `O estado do seu pedido "${orderId}" foi alterado para "${orderState}"`
-    );
+    const { sendOrderNotification } = require("./notification");
+    sendOrderNotification(bot, orderId, orderState, userId);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Erro interno do servidor" });
