@@ -29,7 +29,7 @@ function createOrderBox(order) {
   orderBox.className = "order-box";
 
   const title = document.createElement("h2");
-  title.textContent = `Order ID: ${order.orderId}`;
+  title.textContent = `ID do pedido: ${order.orderId}`;
   orderBox.appendChild(title);
 
   order.items.forEach((item) => {
@@ -37,17 +37,16 @@ function createOrderBox(order) {
     itemContainer.className = "item-container";
 
     const itemName = document.createElement("p");
-    itemName.textContent = `Name: ${item.name}`;
+    itemName.textContent = `Nome: ${item.name}`;
     itemContainer.appendChild(itemName);
 
     const itemQuantity = document.createElement("p");
-    itemQuantity.textContent = `Quantity: ${item.quantity}`;
+    itemQuantity.textContent = `Quantidade: ${item.quantity}`;
     itemContainer.appendChild(itemQuantity);
 
     orderBox.appendChild(itemContainer);
   });
 
-  // Move the createOrderStateSelect function here
   function createOrderStateSelect(orderState) {
     const select = document.createElement("select");
     const states = ["Preparação", "Em progresso", "Finalizado"];
@@ -89,19 +88,17 @@ async function updateOrderState(orderId, newOrderState) {
 
     if (response.ok) {
       const updatedOrder = await response.json();
-      // Optionally, you can log or use the updatedOrder
-      console.log("Order state updated successfully:", updatedOrder);
-      // Additionally, you can re-fetch and re-render the orders if needed
+      alert("Estado do pedido alterado com sucesso:", updatedOrder);
       const updatedOrders = await fetchOrders();
       renderOrders(updatedOrders);
     } else {
-      console.error(
-        "Failed to update order state:",
+      alert(
+        "Falha ao atualizar o estado do pedido:",
         response.status,
         response.statusText
       );
     }
   } catch (error) {
-    console.error("Error updating order state:", error);
+    alert("Falha ao atualizar o estado do pedido:", error);
   }
 }

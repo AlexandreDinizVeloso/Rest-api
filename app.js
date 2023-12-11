@@ -20,7 +20,7 @@ bot.command("pedir", async (ctx) => {
   const orderId = uuidv4();
   bot.telegram.sendMessage(
     userId,
-    `Faça seu pedido aqui: http://localhost:3003/orders/${userId}/${orderId}`
+    `Faça seu pedido aqui: https://fastfoodapi-hflk.onrender.com/orders/${userId}/${orderId}`
   );
 });
 

@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function displayProductsByCategory(category, containerId) {
   const container = document.getElementById(containerId);
 
-  fetch(`http://localhost:3000/api/products/${category}`)
+  fetch(`https://fastfoodapi-hflk.onrender.com/api/products/${category}`)
     .then((response) => response.json())
     .then((products) => {
       displayProducts(products, container);
@@ -101,7 +101,7 @@ function sendOrder() {
     orderState: "Preparação",
   };
 
-  fetch("http://localhost:3000/api/orders", {
+  fetch("https://fastfoodapi-hflk.onrender.com/api/orders", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -110,9 +110,9 @@ function sendOrder() {
   })
     .then((response) => response.json())
     .then((order) => {
-      console.log("Order sent successfully:", order);
+      alert("Pedido enviado com sucesso:", order);
     })
     .catch((error) => {
-      console.error("Error sending order:", error);
+      alert("Erro ao enviar pedido:", error);
     });
 }

@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"nodemon index.js\" \"nodemon app.js\"",
+    "start": "concurrently \"nodemon app.js\" \"nodemon index.js\"",
     "build": "npm install"
   },
   "author": "",
